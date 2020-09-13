@@ -7,16 +7,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DynamicCMS.Data;
 using DynamicCMS.Data.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace DynamicCMS.Controllers
 {
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ProjectsController(ApplicationDbContext context)
+        public ProjectsController(
+	        ApplicationDbContext context, 
+	        UserManager<ApplicationUser> userManager)
         {
-            _context = context;
+	        _context = context;
+	        _userManager = userManager;
         }
 
         // GET: Projects
@@ -36,6 +41,7 @@ namespace DynamicCMS.Controllers
 
             var project = await _context.Projects
                 .Include(p => p.User)
+                .Include(m => m.UnityAssets)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (project == null)
             {
@@ -48,7 +54,8 @@ namespace DynamicCMS.Controllers
         // GET: Projects/Create
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
+	        var userId = _userManager.GetUserId(User);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", nameof(ApplicationUser.UserName));
             return View();
         }
 

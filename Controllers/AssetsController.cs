@@ -24,39 +24,27 @@ namespace DynamicCMS.Controllers
         {
 	        _context = context;
         }
-        private string GetContentType(string path)  
-        {  
-	        var types = GetMimeTypes();  
-	        var ext = Path.GetExtension(path).ToLowerInvariant();  
-	        return types[ext];  
-        }  
-   
-        private Dictionary<string, string> GetMimeTypes()  
-        {  
-	        return new Dictionary<string, string>  
-	        {  
-		        {".txt", "text/plain"},  
-		        {".pdf", "application/pdf"},  
-		        {".doc", "application/vnd.ms-word"},  
-		        {".docx", "application/vnd.ms-word"},  
-		        {".xls", "application/vnd.ms-excel"},  
-		        {".xlsx", "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"},  
-		        {".png", "image/png"},  
-		        {".jpg", "image/jpeg"},  
-		        {".jpeg", "image/jpeg"},  
-		        {".gif", "image/gif"},  
-		        {".csv", "text/csv"}  
-	        };  
+
+        public IActionResult CreateFromProject(int? id)
+        {
+	        if (id == default(int))
+	        {
+		        throw new ArgumentNullException("project id is not set");
 	        }
+
+	        var asset = new Asset()
+	        {
+		        ProjectId = id.Value
+	        };
+	        ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", nameof(Project.Name), id.Value);
+
+	        return View(nameof(Create), asset);
+        }
+
+       
         public async Task<IActionResult> Download(string id)  
-        {  
-	        //if (filename == null)  
-		       // return Content("filename not present");  
-  
-	        //var path = Path.Combine(  
-		       // Directory.GetCurrentDirectory(),  
-		       // "wwwroot", filename);  
-		      var filePath = id;
+        {
+	        var filePath = id;
 	          var memory = new MemoryStream();  
 	          using (var stream = new FileStream(filePath, FileMode.Open))  
 	          {  
@@ -187,8 +175,8 @@ namespace DynamicCMS.Controllers
         }
 
 		//POST: Assets/Edit/5
-  //       To protect from overposting attacks, enable the specific properties you want to bind to, for 
-  //       more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Upload(int id, [Bind("Name,FilePath,Files,ProjectId,Id")] AssetViewModel model)
@@ -270,6 +258,30 @@ namespace DynamicCMS.Controllers
         private bool AssetExists(int id)
         {
             return _context.Assets.Any(e => e.Id == id);
+        }
+        private string GetContentType(string path)  
+        {  
+	        var types = GetMimeTypes();  
+	        var ext = Path.GetExtension(path).ToLowerInvariant();  
+	        return types[ext];  
+        }  
+   
+        private Dictionary<string, string> GetMimeTypes()  
+        {  
+	        return new Dictionary<string, string>  
+	        {  
+		        {".txt", "text/plain"},  
+		        {".pdf", "application/pdf"},  
+		        {".doc", "application/vnd.ms-word"},  
+		        {".docx", "application/vnd.ms-word"},  
+		        {".xls", "application/vnd.ms-excel"},  
+		        {".xlsx", "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"},  
+		        {".png", "image/png"},  
+		        {".jpg", "image/jpeg"},  
+		        {".jpeg", "image/jpeg"},  
+		        {".gif", "image/gif"},  
+		        {".csv", "text/csv"}  
+	        };  
         }
     }
 }
