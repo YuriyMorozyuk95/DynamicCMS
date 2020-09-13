@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using DynamicCMS.Data;
+using DynamicCMS.Data.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,8 +31,20 @@ namespace DynamicCMS
 			services.AddDbContext<ApplicationDbContext>(options =>
 				options.UseSqlServer(
 					Configuration.GetConnectionString("DefaultConnection")));
-			services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+
+			services.AddDefaultIdentity<ApplicationUser>(options =>
+				{
+					options.SignIn.RequireConfirmedAccount = false;
+
+					options.Password.RequiredLength = 1;
+					options.Password.RequiredUniqueChars = 0;
+					options.Password.RequireNonAlphanumeric = false;
+					options.Password.RequireLowercase = false;
+					options.Password.RequireUppercase = false;
+					options.Password.RequireDigit = false;
+				})
 				.AddEntityFrameworkStores<ApplicationDbContext>();
+
 			services.AddControllersWithViews();
 			services.AddRazorPages();
 		}
