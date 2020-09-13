@@ -48,7 +48,7 @@ namespace DynamicCMS.Controllers
         // GET: Assets/Create
         public IActionResult Create()
         {
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id");
+            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", nameof(Project.Name));
             return View();
         }
 
@@ -65,7 +65,7 @@ namespace DynamicCMS.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id", asset.ProjectId);
+            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", nameof(Project.Name), asset.ProjectId);
             return View(asset);
         }
 
@@ -82,7 +82,7 @@ namespace DynamicCMS.Controllers
             {
                 return NotFound();
             }
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id", asset.ProjectId);
+            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", nameof(Project.Name), asset.ProjectId);
             return View(asset);
         }
 
@@ -118,7 +118,7 @@ namespace DynamicCMS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Id", asset.ProjectId);
+            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", nameof(Project.Name), asset.ProjectId);
             return View(asset);
         }
 

@@ -65,7 +65,7 @@ namespace DynamicCMS.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", project.UserId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", nameof(ApplicationUser.UserName), project.UserId);
             return View(project);
         }
 
@@ -82,7 +82,7 @@ namespace DynamicCMS.Controllers
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", project.UserId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", nameof(ApplicationUser.UserName), project.UserId);
             return View(project);
         }
 
@@ -118,7 +118,7 @@ namespace DynamicCMS.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", project.UserId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", nameof(ApplicationUser.UserName), project.UserId);
             return View(project);
         }
 
