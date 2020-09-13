@@ -10,12 +10,14 @@ using Microsoft.EntityFrameworkCore;
 using DynamicCMS.Data;
 using DynamicCMS.Data.Models;
 using DynamicCMS.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
 
 namespace DynamicCMS.Controllers
 {
+	[Authorize]
     public class AssetsController : Controller
     {
         private readonly ApplicationDbContext _context;
