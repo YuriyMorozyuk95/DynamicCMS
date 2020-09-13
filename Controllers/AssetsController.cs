@@ -206,6 +206,7 @@ namespace DynamicCMS.Controllers
 
 			try
 			{
+                RemvoeFileIfExist(model.FilePath);
                 var asset = UploadFile(model);
 
 				_context.Update(asset);
@@ -250,9 +251,20 @@ namespace DynamicCMS.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var asset = await _context.Assets.FindAsync(id);
+
+            RemvoeFileIfExist(asset.FilePath);
+
             _context.Assets.Remove(asset);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private static void RemvoeFileIfExist(string filePath)
+        {
+	        if (System.IO.File.Exists(filePath))
+	        {
+		        System.IO.File.Delete(filePath);
+	        }
         }
 
         private bool AssetExists(int id)
