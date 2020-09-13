@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -12,6 +13,7 @@ using DynamicCMS.Data;
 using DynamicCMS.Data.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 
 namespace DynamicCMS
@@ -28,6 +30,10 @@ namespace DynamicCMS
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.AddSingleton<IFileProvider>(  
+				new PhysicalFileProvider(  
+					Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\assets")));
+
 			services.AddDbContext<ApplicationDbContext>(options =>
 				options.UseSqlServer(
 					Configuration.GetConnectionString("DefaultConnection")));
@@ -65,6 +71,11 @@ namespace DynamicCMS
 			}
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
+			//app.UseStaticFiles(new StaticFileOptions
+			//{
+			//	FileProvider = new PhysicalFileProvider(@"wwwroot\assets\")),
+			//	RequestPath = "/wwwroot/assets"
+			//});
 
 			app.UseRouting();
 
